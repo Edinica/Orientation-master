@@ -12,6 +12,7 @@ namespace test1
     /// </summary>
     public class Graph
     {
+        //а/вы/а/ыва/ыв/а/ыв
         /// <summary>
         /// Список вершин графа
         /// </summary>
