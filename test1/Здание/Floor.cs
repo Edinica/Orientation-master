@@ -8,5 +8,6 @@ namespace test1
 {
     public class Floor
     {
+		//комментарий от меня
     }
 }
