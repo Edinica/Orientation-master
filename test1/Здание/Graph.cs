@@ -21,6 +21,7 @@ namespace test1
         public List<List<VertexWall>>  walls  = new List<List<VertexWall>>();
         public List<List<VertexRoom>>  rooms  = new List<List<VertexRoom>>();
         public List<List<VertexChain>> chains = new List<List<VertexChain>>();
+        public Floor a = new Floor();
         //-----------------------
 
         /// <summary>

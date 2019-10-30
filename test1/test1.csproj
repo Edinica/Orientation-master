@@ -57,6 +57,7 @@
     <Compile Include="Вершины\VertexChain.cs" />
     <Compile Include="Вершины\VertexRoom.cs" />
     <Compile Include="Вершины\VertexWall.cs" />
+    <Compile Include="Здание\Floor.cs" />
     <Compile Include="Связи\GraphEdge.cs" />
     <Compile Include="Алгоритмы\Dikstra.cs" />
     <Compile Include="Алгоритмы\Draw.cs" />
