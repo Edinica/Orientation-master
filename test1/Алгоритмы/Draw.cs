@@ -58,20 +58,21 @@ namespace test1
         // устарело, терерь мы ресуем не граф а стены
         public static void DrawGraph(Graphics pic, Graph graf, int flor, Point centr)
         {
-            for (int i = 0; i < graf.Vertices.Count; i++)
+            for(int f=0;f<graf.Floors.Count;f++)
+            for (int i = 0; i < graf.Floors[f].walls.Count; i++)
             {
-                if (graf.Vertices[i].Point.Z != (flor - 1) * 50) continue;
+                if (graf.Floors[f].walls[i].Point.Z != (flor - 1) * 50) continue;
 
-                pic.FillRectangle(Brushes.Black, (float)graf.Vertices[i].Point.X + centr.X - 1,
-                                                 (float)graf.Vertices[i].Point.Y + centr.Y - 1, 2, 2);
+                pic.FillRectangle(Brushes.Black, (float)graf.Floors[f].walls[i].Point.X + centr.X - 1,
+                                                 (float)graf.Floors[f].walls[i].Point.Y + centr.Y - 1, 2, 2);
 
-                for (int j = 0; j < graf.Vertices[i].Edges.Count; j++)
+                for (int j = 0; j < graf.Floors[f].walls[i].Edges.Count; j++)
                 {
                     pic.DrawLine(new Pen(Brushes.Black, 2),
-                                (float)graf.Vertices[i].Point.X + centr.X,
-                                (float)graf.Vertices[i].Point.Y + centr.Y,
-                                (float)graf.Vertices[i].Edges[j].SecondVertex.Point.X + centr.X,
-                                (float)graf.Vertices[i].Edges[j].SecondVertex.Point.Y + centr.Y);
+                                (float)graf.Floors[f].walls[i].Point.X + centr.X,
+                                (float)graf.Floors[f].walls[i].Point.Y + centr.Y,
+                                (float)graf.Floors[f].walls[i].Edges[j].SecondVertex.Point.X + centr.X,
+                                (float)graf.Floors[f].walls[i].Edges[j].SecondVertex.Point.Y + centr.Y);
                 }
 
             }
@@ -80,19 +81,19 @@ namespace test1
         // рисуем стены
         public static void DrawWalls(Graphics pic, Graph graf, int floor, Point centr)
         {
-            for (int i = 0; i < graf.walls[floor].Count; i++)
+            for (int i = 0; i < graf.Floors[floor].walls.Count; i++)
             {
                 // каждую точку
-                pic.FillRectangle(Brushes.Black, (float)graf.walls[floor][i].Point.X - 1,
-                                                 (float)graf.walls[floor][i].Point.Y - 1, 3, 3);
+                pic.FillRectangle(Brushes.Black, (float)graf.Floors[floor].walls[i].Point.X - 1,
+                                                 (float)graf.Floors[floor].walls[i].Point.Y - 1, 3, 3);
                 // все линии    
-                for (int j = 0; j < graf.walls[floor][i].Edges.Count; j++)
+                for (int j = 0; j < graf.Floors[floor].walls[i].Edges.Count; j++)
                 {
                     pic.DrawLine(new Pen(Brushes.Black, 1),
-                                (float)graf.walls[floor][i].Point.X,
-                                (float)graf.walls[floor][i].Point.Y,
-                                (float)graf.walls[floor][i].Edges[j].SecondVertex.Point.X,
-                                (float)graf.walls[floor][i].Edges[j].SecondVertex.Point.Y);
+                                (float)graf.Floors[floor].walls[i].Point.X,
+                                (float)graf.Floors[floor].walls[i].Point.Y,
+                                (float)graf.Floors[floor].walls[i].Edges[j].SecondVertex.Point.X,
+                                (float)graf.Floors[floor].walls[i].Edges[j].SecondVertex.Point.Y);
                 }
 
             }

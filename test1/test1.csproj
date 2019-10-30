@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Здание\Room.cs" />
     <Compile Include="Вершины\VertexChain.cs" />
     <Compile Include="Вершины\VertexRoom.cs" />
     <Compile Include="Вершины\VertexWall.cs" />

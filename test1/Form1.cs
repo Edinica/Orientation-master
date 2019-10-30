@@ -23,7 +23,7 @@ namespace test1
 
             centr = new Point(pictureBox1.Width/2,pictureBox1.Height/2);
             label4.Text = centr.ToString();
-
+            build.CreateNewFloor(trackBar4.Value);
         }
 
         public Graphics grap;
@@ -43,35 +43,35 @@ namespace test1
         private void Button1_Click(object sender, EventArgs e)
         { 
             // если на этаже уже есть точки - не дублиррурем
-            if (build.walls[trackBar4.Value - 1].Count() != 0) { return; }
+            if (build.Floors[trackBar4.Value - 1].walls.Count() != 0) { return; }
 
             // проецирование нижнего этажа на верхний
-            for (int i = 0; i < build.walls[trackBar4.Value - 2].Count(); i++)
+            for (int i = 0; i < build.Floors[trackBar4.Value - 2].walls.Count(); i++)
             {
-                build.AddVertexWalls("", (int)build.walls[trackBar4.Value - 2][i].Point.X,
-                                        (int)build.walls[trackBar4.Value - 2][i].Point.Y,
-                                        (int)build.walls[trackBar4.Value - 2][i].Point.Z+1);
+                build.AddVertexWalls("", (int)build.Floors[trackBar4.Value - 2].walls[i].Point.X,
+                                         (int)build.Floors[trackBar4.Value - 2].walls[i].Point.Y,
+                                         (int)build.Floors[trackBar4.Value - 2].walls[i].Point.Z+1);
             }
 
             // дублировани связей
-            for (int i = 0; i < build.walls[trackBar4.Value - 2].Count(); i++)
-            for (int j = 0; j < build.walls[trackBar4.Value - 2][i].Edges.Count(); j++)
+            for (int i = 0; i < build.Floors[trackBar4.Value - 2].walls.Count(); i++)
+            for (int j = 0; j < build.Floors[trackBar4.Value - 2].walls[i].Edges.Count(); j++)
             {
-                build.walls[trackBar4.Value - 1][i].AddEdge(
+                build.Floors[trackBar4.Value - 1].walls[i].AddEdge(
                    build.FindVertex(
-                       new Point((int)build.walls[trackBar4.Value - 2][i].Edges[j].SecondVertex.Point.X,
-                                 (int)build.walls[trackBar4.Value - 2][i].Edges[j].SecondVertex.Point.Y),
+                       new Point((int)build.Floors[trackBar4.Value - 2].walls[i].Edges[j].SecondVertex.Point.X,
+                                 (int)build.Floors[trackBar4.Value - 2].walls[i].Edges[j].SecondVertex.Point.Y),
                        trackBar4.Value - 1, "wall"),5);
             }
 
             // создания связей между этажами
-            for (int i = 0; i < build.walls[trackBar4.Value - 2].Count; i++)
+            for (int i = 0; i < build.Floors[trackBar4.Value - 2].walls.Count; i++)
             {
                 build.AddEdge(
-                    build.walls[trackBar4.Value-2][i],
+                    build.Floors[trackBar4.Value-2].walls[i],
                     build.FindVertex(new Point(
-                        (int)build.walls[trackBar4.Value - 1][i].Point.X,
-                        (int)build.walls[trackBar4.Value - 1][i].Point.Y),
+                        (int)build.Floors[trackBar4.Value - 1].walls[i].Point.X,
+                        (int)build.Floors[trackBar4.Value - 1].walls[i].Point.Y),
                         trackBar4.Value - 1, "wall"),0);
             }
 
@@ -80,29 +80,8 @@ namespace test1
             // MessageBox.Show(buil.Vertices.Count.ToString());
         }
 
-        double angel_X;
-        double angel_Y;
-        double angel_Z;
-
         Point centr; // точка отсчета экранных координат
         Point StartMove; // начало смящения
-
-        // МУСОР
-        private void TrackBar1_Scroll(object sender, EventArgs e)
-        {
-            angel_X = (double)(trackBar1.Value) / 100;
-            button1.PerformClick();
-        }
-        private void TrackBar2_Scroll(object sender, EventArgs e)
-        {
-            angel_Y = (double)(trackBar2.Value) / 100;
-            button1.PerformClick();
-        }
-        private void TrackBar3_Scroll(object sender, EventArgs e)
-        {
-            angel_Z = (double)(trackBar3.Value) / 100;
-            button1.PerformClick();
-        }
 
         private void TrackBar4_Scroll(object sender, EventArgs e)
         {
@@ -110,11 +89,13 @@ namespace test1
             grap.Clear(Color.White);
 
 
+            if (build.isFloor(trackBar4.Value))
+            {
+                label5.Text = build.Floors.Count.ToString() + " этажей";
+                label6.Text = build.Floors[trackBar4.Value - 1].walls.Count().ToString() + " точек на этаже ";
 
-            label5.Text = build.walls.Count.ToString()+" этажей";
-            label6.Text = build.walls[trackBar4.Value - 1].Count().ToString()+" точек на этаже ";
-
-            Draw.DrawWalls(grap, build, trackBar4.Value - 1, centr);
+                Draw.DrawWalls(grap, build, trackBar4.Value - 1, centr);
+            }
             pictureBox1.Image = picture;
         }
 
@@ -143,7 +124,7 @@ namespace test1
                         if (temp == null)// если нет там точки - создаем
                         {
                             build.AddVertexWalls("", e.X, e.Y, (trackBar4.Value - 1));
-                            firstvertex = build.walls[trackBar4.Value - 1].Last();
+                            firstvertex = build.Floors[trackBar4.Value - 1].walls.Last();
                         }
                         else { firstvertex = temp; }
                         firstclick = false;
@@ -157,22 +138,22 @@ namespace test1
 						int iswall=-1;
                         // если второй раз кликнули на точку должны взять ее
                         //build.FindWall(new Point(e.X, e.Y), trackBar4.Value - 1);
-						for (int i = 1; i < build.walls[trackBar4.Value - 1].Count; i+=2)
+						for (int i = 1; i < build.Floors[trackBar4.Value - 1].walls.Count; i+=2)
 							{
 							k = 0;m = 0;
-							if ((build.walls[trackBar4.Value - 1].Count > 1) &&
-								(((build.walls[trackBar4.Value - 1][i - 1].Point.X < e.X &&
-								e.X < build.walls[trackBar4.Value - 1][i].Point.X) ||
-								(build.walls[trackBar4.Value - 1][i].Point.X < e.X &&
-								e.X < build.walls[trackBar4.Value - 1][i - 1].Point.X))
+							if ((build.Floors[trackBar4.Value - 1].walls.Count > 1) &&
+								(((build.Floors[trackBar4.Value - 1].walls[i - 1].Point.X < e.X &&
+								e.X < build.Floors[trackBar4.Value - 1].walls[i].Point.X) ||
+								(build.Floors[trackBar4.Value - 1].walls[i].Point.X < e.X &&
+								e.X < build.Floors[trackBar4.Value - 1].walls[i - 1].Point.X))
 								||
-								((build.walls[trackBar4.Value - 1][i - 1].Point.Y < e.Y &&
-								e.Y < build.walls[trackBar4.Value - 1][i].Point.Y) ||
-								(build.walls[trackBar4.Value - 1][i].Point.Y < e.Y &&
-								e.Y < build.walls[trackBar4.Value - 1][i - 1].Point.Y)))//если точка лежит в пределе отрезка
+								((build.Floors[trackBar4.Value - 1].walls[i - 1].Point.Y < e.Y &&
+								e.Y < build.Floors[trackBar4.Value - 1].walls[i].Point.Y) ||
+								(build.Floors[trackBar4.Value - 1].walls[i].Point.Y < e.Y &&
+								e.Y < build.Floors[trackBar4.Value - 1].walls[i - 1].Point.Y)))//если точка лежит в пределе отрезка
 								&&
-								build.On_line(build.walls[trackBar4.Value - 1][i - 1].Point,
-								build.walls[trackBar4.Value - 1][i].Point,
+								build.On_line(build.Floors[trackBar4.Value - 1].walls[i - 1].Point,
+								build.Floors[trackBar4.Value - 1].walls[i].Point,
 								new Point(e.X, e.Y), out x, out k, out m)) {
 								iswall = i - 1;// MessageBox.Show("да " + (i - 1).ToString() + "\n" + x.ToString());
 								//добавить разбиение ребра на 2 ребра
@@ -193,9 +174,9 @@ namespace test1
                         if (ispoint == null || iswall!=-1)
                         {
                             build.AddVertexWalls("", e.X, e.Y, (trackBar4.Value - 1));
-                            build.AddEdge(firstvertex, build.walls[trackBar4.Value - 1].Count - 1, trackBar4.Value - 1, 0);
-                            grap.FillRectangle(Brushes.Black, (float)build.walls[trackBar4.Value - 1].Last().Point.X - 1,
-                                                              (float)build.walls[trackBar4.Value - 1].Last().Point.Y - 1, 3, 3);
+                            build.AddEdge(firstvertex, build.Floors[trackBar4.Value - 1].walls.Count - 1, trackBar4.Value - 1, 0);
+                            grap.FillRectangle(Brushes.Black, (float)build.Floors[trackBar4.Value - 1].walls.Last().Point.X - 1,
+                                                              (float)build.Floors[trackBar4.Value - 1].walls.Last().Point.Y - 1, 3, 3);
                             pictureBox1.Image = picture;
                         }
                         else { build.AddEdge(firstvertex, ispoint, 0); }
@@ -241,11 +222,11 @@ namespace test1
                 grap.Clear(Color.White);
                 centr.X -= StartMove.X - e.X;
                 centr.Y -= StartMove.Y - e.Y;
-				for (int i = 0; i < build.walls[trackBar4.Value - 1].Count; i++)
+				for (int i = 0; i < build.Floors[trackBar4.Value - 1].walls.Count; i++)
 				{
-					build.walls[trackBar4.Value - 1][i].ChangePonit(
-						(int)build.walls[trackBar4.Value - 1][i].Point.X- (StartMove.X - e.X),
-						(int)build.walls[trackBar4.Value - 1][i].Point.Y -(StartMove.Y - e.Y), trackBar4.Value - 1);
+					build.Floors[trackBar4.Value - 1].walls[i].ChangePonit(
+						(int)build.Floors[trackBar4.Value - 1].walls[i].Point.X- (StartMove.X - e.X),
+						(int)build.Floors[trackBar4.Value - 1].walls[i].Point.Y -(StartMove.Y - e.Y), trackBar4.Value - 1);
 				}
 				StartMove.X = e.X;
                 StartMove.Y = e.Y;
@@ -301,12 +282,12 @@ namespace test1
 					   new Font("Arial", 8), new SolidBrush(Color.Black),
 					   (int)firstvertex.Point.X, (int)firstvertex.Point.Y);
 
-				for (int i=0;i< build.walls[trackBar4.Value - 1].Count;i++)
+				for (int i=0;i< build.Floors[trackBar4.Value - 1].walls.Count;i++)
 					grap.DrawString(
 					   i + "*",
 					   new Font("Arial", 8), new SolidBrush(Color.Black),
-					   (int)build.walls[trackBar4.Value - 1][i].Point.X - 10,
-					   (int)build.walls[trackBar4.Value - 1][i].Point.Y - 10);
+					   (int)build.Floors[trackBar4.Value - 1].walls[i].Point.X - 10,
+					   (int)build.Floors[trackBar4.Value - 1].walls[i].Point.Y - 10);
 				pictureBox1.Image = picture;
             }// создание плана здания
 
@@ -341,10 +322,9 @@ namespace test1
         private void Button3_Click(object sender, EventArgs e)
         {
             // НОВЫЙ ЭТАЖ ЕСЛИ СОЗДАЛИ - ТО ВОТЬ
-            build.walls.Add(new List<VertexWall>());
-            build.rooms.Add(new List<VertexRoom>());
-            build.chains.Add(new List<VertexChain>());
-            trackBar4.Maximum++;
+            if (!build.isFloor(trackBar4.Value))
+                 build.CreateNewFloor(trackBar4.Value);
+            trackBar4.Maximum++; 
         }
     }
 }

@@ -67,11 +67,11 @@ namespace test1
         /// </summary>
         void InitInfo()
         {
-            infos = new List<GraphVertexInfo>();
-            foreach (var v in graph.Vertices)
-            {
-                infos.Add(new GraphVertexInfo(v));
-            }
+         //  infos = new List<GraphVertexInfo>();
+         //  foreach (var v in graph.Vertices)
+         //  {
+         //      infos.Add(new GraphVertexInfo(v));
+         //  }
         }
 
         /// <summary>

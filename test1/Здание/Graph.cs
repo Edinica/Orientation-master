@@ -12,16 +12,7 @@ namespace test1
     /// </summary>
     public class Graph
     {
-        /// <summary>
-        /// Список вершин графа
-        /// </summary>
-        public List<IVertex> Vertices { get; set; }//устарело
-
-        // где каждый 1й лист это этаж а 2й уже позиция точки на этаже
-        public List<List<VertexWall>>  walls  = new List<List<VertexWall>>();
-        public List<List<VertexRoom>>  rooms  = new List<List<VertexRoom>>();
-        public List<List<VertexChain>> chains = new List<List<VertexChain>>();
-        public Floor a = new Floor();
+        public List<Floor> Floors;
         //-----------------------
 
         /// <summary>
@@ -29,9 +20,21 @@ namespace test1
         /// </summary>
         public Graph()
         {
-            walls.Add(new List<VertexWall>());
-            rooms.Add(new List<VertexRoom>());
-            chains.Add(new List<VertexChain>());
+            Floors = new List<Floor>();
+        }
+
+        public void CreateNewFloor(int level=-999)
+        {
+            Floors.Add(new Floor(level));
+        }
+        public bool isFloor(int level)
+        {  
+            foreach (var i in Floors)
+            {
+                if (i.Level == level){ 
+                    return true; }
+            }
+            return false;
         }
 
         /// <summary>
@@ -43,7 +46,7 @@ namespace test1
         /// <param name="Z">Координата У вершины</param>
         public void AddVertexChain(string vertexName, int X, int Y, int Z)
         {
-            chains[Z].Add(new VertexChain(vertexName, X, Y, Z));
+            Floors[Z].chains.Add(new VertexChain(vertexName, X, Y, Z));
         }
         /// <summary>
         /// Добавление вершины
@@ -54,7 +57,7 @@ namespace test1
         /// <param name="Z">Координата У вершины</param>
         public void AddVertexRoom(string vertexName, int X, int Y, int Z)
         {
-            rooms[Z].Add(new VertexRoom(vertexName, X, Y, Z));
+            Floors[Z].rooms.Add(new VertexRoom(vertexName, X, Y, Z));
         }
         /// <summary>
         /// Добавление вершины
@@ -65,7 +68,7 @@ namespace test1
         /// <param name="Z">Координата У вершины</param>
         public void AddVertexWalls(string vertexName, int X, int Y, int floor)
         {
-            walls[floor].Add(new VertexWall(vertexName, X, Y, floor));
+            Floors[floor].walls.Add(new VertexWall(vertexName, X, Y, floor));
         }
 
         /// <summary>
@@ -77,7 +80,7 @@ namespace test1
         {
             if (what == "wall")
             {
-                foreach (var v in walls[floor])
+                foreach (var v in Floors[floor].walls)
                 {
                     if (36 >= (v.Point.X - range.X) * (v.Point.X - range.X) +
                               (v.Point.Y - range.Y) * (v.Point.Y - range.Y))
@@ -86,7 +89,7 @@ namespace test1
             }
             else if (what == "room")
             {
-                foreach (var v in rooms[floor])
+                foreach (var v in Floors[floor].rooms)
                 {
                     if (36 >= (v.Point.X - range.X) * (v.Point.X - range.X) +
                               (v.Point.Y - range.Y) * (v.Point.Y - range.Y))
@@ -95,7 +98,7 @@ namespace test1
             }
             else
             {
-                foreach (var v in chains[floor])
+                foreach (var v in Floors[floor].chains)
                 {
                     if (36 >= (v.Point.X - range.X) * (v.Point.X - range.X) +
                               (v.Point.Y - range.Y) * (v.Point.Y - range.Y))
@@ -112,7 +115,7 @@ namespace test1
             // если точка принадлежит прямой 
             // образованной двумя точками
             // 
-            foreach (var v in walls[floor])
+            foreach (var v in Floors[floor].walls)
             {
                 if (36 >= (v.Point.X - range.X) * (v.Point.X - range.X) +
                           (v.Point.Y - range.Y) * (v.Point.Y - range.Y))
@@ -159,13 +162,22 @@ namespace test1
         /// <param name="firstnum">Номер первой вершины</param>
         /// <param name="secondnum">Номер второй вершины</param>
         /// <param name="weight">Вес ребра соединяющего вершины</param>
-        public void AddEdge(int firstnum, int secondnum, int weight)
+        public void AddEdge(int firstnum, int secondnum, String type, int floor, int weight)
         {
-            if (Vertices[firstnum] != null && Vertices[secondnum] != null)
+            switch (type)
             {
-                GraphEdge NewOne = new GraphEdge(Vertices[firstnum], Vertices[secondnum], weight);
-                // Vertices[firstnum].AddEdge(Vertices[secondnum], weight);
-                // Vertices[secondnum].AddEdge(Vertices[firstnum], weight);
+                case "Rooms":
+                    break;
+                case "Chains":
+                    break;
+                case "Walls":
+                    if (Floors[floor].walls[firstnum] != null && Floors[floor].walls[secondnum] != null)
+                    {
+                        GraphEdge NewOne = new GraphEdge(Floors[0].walls[firstnum], Floors[0].walls[secondnum], weight);
+                        // Vertices[firstnum].AddEdge(Vertices[secondnum], weight);
+                        // Vertices[secondnum].AddEdge(Vertices[firstnum], weight);
+                    }
+                    break;
             }
         }
         /// <summary>
@@ -193,9 +205,9 @@ namespace test1
         public void AddEdge(IVertex first, int secondnum, int floor, int weight)
         {
             if (first.GetType() == typeof(VertexWall))
-                if (first != null && walls[floor][secondnum] != null)
+                if (first != null && Floors[floor].walls[secondnum] != null)
                 {
-                    GraphEdge NewOne = new GraphEdge(first, walls[floor][secondnum], weight);
+                    GraphEdge NewOne = new GraphEdge(first, Floors[floor].walls[secondnum], weight);
                     //first.AddEdge(walls[floor][secondnum], weight);
                     //walls[floor][secondnum].AddEdge(first, weight);
                 }
@@ -206,12 +218,12 @@ namespace test1
         /// <param name="firstnum">Номер первой вершины</param>
         /// <param name="secondnum">Вторая вершина</param>
         /// <param name="weight">Вес ребра соединяющего вершины</param>                                        
-        public void AddEdge(int firstnum, IVertex second, int weight)
-        {                                                           
+        public void AddEdge(int firstnum, IVertex second,int floor, int weight)
+        {
             if (second.GetType() == typeof(VertexWall))
-                if (second != null && Vertices[firstnum] != null)
-                {
-                    GraphEdge NewOne = new GraphEdge(second, Vertices[firstnum], weight);
+                if (second != null && Floors[floor].walls[firstnum] != null) { 
+
+                    GraphEdge NewOne = new GraphEdge(Floors[floor].walls[firstnum], second, weight);
                     // second.AddEdge(Vertices[firstnum], weight);
                     // Vertices[firstnum].AddEdge(second, weight);
                 }
@@ -234,15 +246,16 @@ namespace test1
             temp.Edges.AddRange(first.Edges);
             temp.Edges.AddRange(second.Edges);
             temp.Edges.GroupBy(x => x.SecondVertex).Select(x => x.First()).ToList();
-            Vertices.Remove(first);
-            Vertices.Remove(second);
-            Vertices.Add(temp);
+          //  Vertices.Remove(first);
+          //  Vertices.Remove(second);
+          //  Vertices.Add(temp);
+          //ВОТ ТУТ ХЗ ЧТО НО ЗРЯ ТЫ ВОТ ЕТО ИСПОЛЬЗОВАЛ, НУЖНЫ ПРОВЕРКИ ТИПОВ БУДУТ
         }
         //нужно сделаать так, что б это отправлять на мобилку
         public override string ToString() { return ""; }
 		public void ToFile()
 		{
-			foreach(var e in walls)
+			foreach(var e in Floors)
 			{
 
 
