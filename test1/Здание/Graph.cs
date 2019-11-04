@@ -13,6 +13,8 @@ namespace test1
     public class Graph
     {
         public List<Floor> Floors;
+
+        public List<Room>  Rooms;
         //-----------------------
 
         /// <summary>
@@ -21,6 +23,7 @@ namespace test1
         public Graph()
         {
             Floors = new List<Floor>();
+            Rooms  = new List<Room>();
         }
 
         public void CreateNewFloor(int level=-999)

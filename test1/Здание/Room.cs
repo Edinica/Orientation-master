@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace test1
 {
-    class Room
+    public class Room
     {
     }
 }
