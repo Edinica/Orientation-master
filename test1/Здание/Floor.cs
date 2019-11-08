@@ -29,6 +29,17 @@ namespace test1
             Level = level;
            
         }
+		public bool uslovie(VertexWall first, VertexWall second, int X, int Y)
+		{
+			if 
+				(
+				(((first.Point.X < X && X < second.Point.X) ||
+				(second.Point.X < X && X < first.Point.X)) ||
+				((first.Point.Y < Y && Y < second.Point.Y) ||
+				(second.Point.Y < Y && Y < first.Point.Y)))
+				) return true;
+			else return false;
+		}
 
     }
 }

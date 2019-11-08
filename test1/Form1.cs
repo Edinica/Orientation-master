@@ -141,33 +141,25 @@ namespace test1
 						for (int i = 1; i < build.Floors[trackBar4.Value - 1].walls.Count; i+=2)
 							{
 							k = 0;m = 0;
-							if ((build.Floors[trackBar4.Value - 1].walls.Count > 1) &&
-								(((build.Floors[trackBar4.Value - 1].walls[i - 1].Point.X < e.X &&
-								e.X < build.Floors[trackBar4.Value - 1].walls[i].Point.X) ||
-								(build.Floors[trackBar4.Value - 1].walls[i].Point.X < e.X &&
-								e.X < build.Floors[trackBar4.Value - 1].walls[i - 1].Point.X))
-								||
-								((build.Floors[trackBar4.Value - 1].walls[i - 1].Point.Y < e.Y &&
-								e.Y < build.Floors[trackBar4.Value - 1].walls[i].Point.Y) ||
-								(build.Floors[trackBar4.Value - 1].walls[i].Point.Y < e.Y &&
-								e.Y < build.Floors[trackBar4.Value - 1].walls[i - 1].Point.Y)))//если точка лежит в пределе отрезка
-								&&
+							if (
+								(build.Floors[trackBar4.Value - 1].walls.Count > 1) &&///1) 
+								build.Floors[trackBar4.Value - 1].uslovie
+								(build.Floors[trackBar4.Value - 1].walls[i - 1], build.Floors[trackBar4.Value - 1].walls[i],e.X,e.Y)&&//2)
+								//если точка лежит в пределе отрезка
 								build.On_line(build.Floors[trackBar4.Value - 1].walls[i - 1].Point,
 								build.Floors[trackBar4.Value - 1].walls[i].Point,
-								new Point(e.X, e.Y), out x, out k, out m)) {
-								iswall = i - 1;// MessageBox.Show("да " + (i - 1).ToString() + "\n" + x.ToString());
+								new Point(e.X, e.Y), out x, out k, out m)) {//3)
+								iswall = i - 1; MessageBox.Show("да " + (i - 1).ToString() + "\n" + x.ToString());
 								//добавить разбиение ребра на 2 ребра
-								//build.walls[trackBar4.Value - 1][i - 1].Edges.Add(new GraphEdge()) = new ();
-									break; }
+								build.Floors[trackBar4.Value - 1].walls[i - 1].Edges[0].SecondVertex = new VertexWall("", e.X + k, e.Y + m, trackBar4.Value - 1);
+								build.Floors[trackBar4.Value - 1].walls[i].Edges[0].FurstVertex = new VertexWall("", e.X + k, e.Y + m, trackBar4.Value - 1);
+
+								break; }
 								else MessageBox.Show("0" + "\n" + i.ToString()///x.ToString()
 									);
 							}
 					   //я тут подумал о использовании лямбж выражений для рисования фигни как эта
 					   /*напомни эт как
-						* функция для создания комнаты
-						* функция для прохода по сторонам
-						* когда написали какой то текст во всех полях тогда можем указать комнату
-						* ищем ближайшую точку и выполняем проход по стенам если да то точка посередине и при ее нажатии выводим информацию
 						* 
 						* 
 					    */
