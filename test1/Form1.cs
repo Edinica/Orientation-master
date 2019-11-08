@@ -152,6 +152,7 @@ namespace test1
 								iswall = i - 1; MessageBox.Show("да " + (i - 1).ToString() + "\n" + x.ToString());
 								//добавить разбиение ребра на 2 ребра
 								build.Floors[trackBar4.Value - 1].walls[i - 1].Edges[0].SecondVertex = new VertexWall("", e.X + k, e.Y + m, trackBar4.Value - 1);
+								//функция которая принимает 2 вершины, удаляет удаляет связи между собой 
 								build.Floors[trackBar4.Value - 1].walls[i].Edges[0].FurstVertex = new VertexWall("", e.X + k, e.Y + m, trackBar4.Value - 1);
 
 								break; }
