@@ -13,7 +13,7 @@ namespace test1
         Point3D Point { get; set; }
         List<GraphEdge> Edges { get; set; }
 
-        void ChangePonit(int X = 0, int Y = 0, int Z = 0);
+        void ChangePoint(int X = 0, int Y = 0, int Z = 0);
         void AddEdge(GraphEdge newEdge);
         void AddEdge(IVertex second, int edgeWeight);
         string ToString();

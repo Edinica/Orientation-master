@@ -31,6 +31,8 @@ namespace test1
         SolidBrush brush;
         Pen pen;
 		bool move;
+		int chosen =-1;
+		IVertex movable;//
 
         public Graph build = new Graph(); // вот сам граф, тоесть, ну здание или т.п
 
@@ -107,7 +109,29 @@ namespace test1
         {
             if (radioButton1.Checked)
             {
-				move ^= true;
+				if (Control.ModifierKeys == Keys.Control)//перенос точки по щелчку по ней
+				{
+					//chosen = true;
+
+					if (chosen == -1)// если нет там точки - создаем
+					{
+						//movable = build.FindVertex(new Point(e.X, e.Y), trackBar4.Value - 1, "wall");
+						chosen = build.FindNumberVertex(new Point(e.X, e.Y), trackBar4.Value - 1, "wall");
+						//perenos ^= true;
+					}
+					else
+					{//проработать это в mousemove
+						build.Floors[trackBar4.Value - 1].walls[chosen].ChangePoint(e.X, e.Y, trackBar4.Value - 1);
+						grap.Clear(Color.White);
+						Draw.DrawWalls(grap, build, trackBar4.Value - 1, centr);
+						pictureBox1.Image = picture;
+					}
+				}
+				else
+				{
+					move ^= true;
+					chosen = -1;
+				}
 				
 				pictureBox1.MouseMove += PictureBox1_MouseMove;
                 StartMove = new Point(e.X, e.Y);
@@ -194,7 +218,10 @@ namespace test1
             if      (radioButton1.Checked)
             {
 				move ^= true;
-                pictureBox1.MouseMove -= PictureBox1_MouseMove;
+				chosen =-1;
+				movable = null;
+
+				pictureBox1.MouseMove -= PictureBox1_MouseMove;
             }// смещение графа 
             else if (radioButton2.Checked)
             {
@@ -211,19 +238,19 @@ namespace test1
         private void PictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
             if      (radioButton1.Checked && move)
-            {//когда переходим в режим редактироования, линии не переносятся
+            {
                 grap.Clear(Color.White);
                 centr.X -= StartMove.X - e.X;
                 centr.Y -= StartMove.Y - e.Y;
 				for (int i = 0; i < build.Floors[trackBar4.Value - 1].walls.Count; i++)
 				{
-					build.Floors[trackBar4.Value - 1].walls[i].ChangePonit(
+					build.Floors[trackBar4.Value - 1].walls[i].ChangePoint(
 						(int)build.Floors[trackBar4.Value - 1].walls[i].Point.X- (StartMove.X - e.X),
 						(int)build.Floors[trackBar4.Value - 1].walls[i].Point.Y -(StartMove.Y - e.Y), trackBar4.Value - 1);
 				}
 				StartMove.X = e.X;
                 StartMove.Y = e.Y;
-                grap.DrawEllipse(pen, centr.X - 25, centr.Y - 25, 50, 50);
+                //grap.DrawEllipse(pen, centr.X - 25, centr.Y - 25, 50, 50);
 				
                 Draw.DrawWalls(grap, build, trackBar4.Value - 1, centr);
                 pictureBox1.Image = picture;

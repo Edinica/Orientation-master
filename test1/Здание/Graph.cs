@@ -108,12 +108,56 @@ namespace test1
                         return v; }
                 return null; }
         }
-        /// <summary>
-        /// Поиск стены
-        /// </summary>
-        /// <param name="range">Координаты новой точки</param>
-        /// <returns>Найденная вершина</returns>                     
-        public IVertex FindWall(Point range, int floor)
+
+		/// <summary>
+		/// Поиск номера вершины вершины
+		/// </summary>
+		/// <param name="range">Координаты точки</param>
+		/// <returns>Номер найденной вершины</returns>                     
+		public int FindNumberVertex(Point range, int floor, string what)
+		{
+			if (what == "wall")
+			{	int i = 0;
+				foreach (var v in Floors[floor].walls)
+				{
+					if (36 >= (v.Point.X - range.X) * (v.Point.X - range.X) +
+							  (v.Point.Y - range.Y) * (v.Point.Y - range.Y))
+						return i;
+					i++;
+				}
+				return -1;
+			}
+			else if (what == "room")
+			{
+				int i = 0;
+				foreach (var v in Floors[floor].rooms)
+				{
+					if (36 >= (v.Point.X - range.X) * (v.Point.X - range.X) +
+							  (v.Point.Y - range.Y) * (v.Point.Y - range.Y))
+						return i;
+					i++;
+				}
+				return -1;
+			}
+			else
+			{
+				int i = 0;
+				foreach (var v in Floors[floor].chains)
+				{
+					if (36 >= (v.Point.X - range.X) * (v.Point.X - range.X) +
+							  (v.Point.Y - range.Y) * (v.Point.Y - range.Y))
+						return i;
+					i++;
+				}
+				return -1;
+			}
+		}
+		/// <summary>
+		/// Поиск стены
+		/// </summary>
+		/// <param name="range">Координаты новой точки</param>
+		/// <returns>Найденная вершина</returns>                     
+		public IVertex FindWall(Point range, int floor)
         {
             // если точка принадлежит прямой 
             // образованной двумя точками

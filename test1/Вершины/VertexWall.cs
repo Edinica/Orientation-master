@@ -63,7 +63,7 @@ namespace test1
         /// <param name="X">Координата Х вершины</param>
         /// <param name="Y">Координата У вершины</param>
         /// <param name="Z">Координата Z вершины</param>
-        public void ChangePonit(int X = 0, int Y = 0, int Z = 0)
+        public void ChangePoint(int X = 0, int Y = 0, int Z = 0)
         {
             Point = new Point3D(X, Y, Z);
         }
