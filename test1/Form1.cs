@@ -262,6 +262,7 @@ namespace test1
 					build.Floors[trackBar4.Value - 1].walls[chosen].ChangePoint(e.X, e.Y, trackBar4.Value - 1);
 					grap.Clear(Color.White);
 					Draw.DrawWalls(grap, build, trackBar4.Value - 1, centr,3);
+
 					pictureBox1.Image = picture;
 				}
 			}// смещение графа 

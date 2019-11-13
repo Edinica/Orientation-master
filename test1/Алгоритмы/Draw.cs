@@ -77,7 +77,11 @@ namespace test1
 
             }
         }
-
+		/*public static void DrawPoint(Graphics pic, IVertex vertex, Point centr, int i)//для рисвания точки полсе того как ее выбрали
+		{
+			pic.FillRectangle(Brushes.Black, (float)vertex.Point.X + centr.X - i,
+												 (float)vertex.Point.Y + centr.Y - i, 2 * i, 2 * i);
+		}*/
         // рисуем стены
         public static void DrawWalls(Graphics pic, Graph graf, int floor, Point centr,int size)
         {
