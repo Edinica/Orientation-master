@@ -79,17 +79,17 @@ namespace test1
         }
 
         // рисуем стены
-        public static void DrawWalls(Graphics pic, Graph graf, int floor, Point centr)
+        public static void DrawWalls(Graphics pic, Graph graf, int floor, Point centr,int size)
         {
             for (int i = 0; i < graf.Floors[floor].walls.Count; i++)
             {
                 // каждую точку
-                pic.FillRectangle(Brushes.Black, (float)graf.Floors[floor].walls[i].Point.X - 1,
-                                                 (float)graf.Floors[floor].walls[i].Point.Y - 1, 3, 3);
+                pic.FillRectangle(Brushes.Black, (float)graf.Floors[floor].walls[i].Point.X - size,
+                                                 (float)graf.Floors[floor].walls[i].Point.Y - size, 2* size, 2* size);
                 // все линии    
                 for (int j = 0; j < graf.Floors[floor].walls[i].Edges.Count; j++)
                 {
-                    pic.DrawLine(new Pen(Brushes.Black, 1),
+                    pic.DrawLine(new Pen(Brushes.Black, size),
                                 (float)graf.Floors[floor].walls[i].Point.X,
                                 (float)graf.Floors[floor].walls[i].Point.Y,
                                 (float)graf.Floors[floor].walls[i].Edges[j].SecondVertex.Point.X,

@@ -77,7 +77,7 @@ namespace test1
                         trackBar4.Value - 1, "wall"),0);
             }
 
-            Draw.DrawWalls(grap, build, trackBar4.Value - 1, centr);
+            Draw.DrawWalls(grap, build, trackBar4.Value - 1, centr,1);
             pictureBox1.Image = picture;
             // MessageBox.Show(buil.Vertices.Count.ToString());
         }
@@ -96,7 +96,7 @@ namespace test1
                 label5.Text = build.Floors.Count.ToString() + " этажей";
                 label6.Text = build.Floors[trackBar4.Value - 1].walls.Count().ToString() + " точек на этаже ";
 
-                Draw.DrawWalls(grap, build, trackBar4.Value - 1, centr);
+                Draw.DrawWalls(grap, build, trackBar4.Value - 1, centr,1);
             }
             pictureBox1.Image = picture;
         }
@@ -121,10 +121,7 @@ namespace test1
 					}
 					else
 					{//проработать это в mousemove
-						build.Floors[trackBar4.Value - 1].walls[chosen].ChangePoint(e.X, e.Y, trackBar4.Value - 1);
-						grap.Clear(Color.White);
-						Draw.DrawWalls(grap, build, trackBar4.Value - 1, centr);
-						pictureBox1.Image = picture;
+						
 					}
 				}
 				else
@@ -175,9 +172,9 @@ namespace test1
 								new Point(e.X, e.Y), out x, out k, out m)) {//3)
 								iswall = i - 1; MessageBox.Show("да " + (i - 1).ToString() + "\n" + x.ToString());
 								//добавить разбиение ребра на 2 ребра
-								build.Floors[trackBar4.Value - 1].walls[i - 1].Edges[0].SecondVertex = new VertexWall("", e.X + k, e.Y + m, trackBar4.Value - 1);
+								//build.Floors[trackBar4.Value - 1].walls[i - 1].Edges[0].SecondVertex = new VertexWall("", e.X + k, e.Y + m, trackBar4.Value - 1);
 								//функция которая принимает 2 вершины, удаляет удаляет связи между собой 
-								build.Floors[trackBar4.Value - 1].walls[i].Edges[0].FurstVertex = new VertexWall("", e.X + k, e.Y + m, trackBar4.Value - 1);
+								//build.Floors[trackBar4.Value - 1].walls[i].Edges[0].FurstVertex = new VertexWall("", e.X + k, e.Y + m, trackBar4.Value - 1);
 
 								break; }
 								else MessageBox.Show("0" + "\n" + i.ToString()///x.ToString()
@@ -217,18 +214,22 @@ namespace test1
         {
             if      (radioButton1.Checked)
             {
-				move ^= true;
-				chosen =-1;
-				movable = null;
+				if (chosen != -1) chosen = -1;
+				else
+				{
+					move ^= true;
 
-				pictureBox1.MouseMove -= PictureBox1_MouseMove;
+					movable = null;
+
+					pictureBox1.MouseMove -= PictureBox1_MouseMove;
+				}
             }// смещение графа 
             else if (radioButton2.Checked)
             {
                 if (firstvertex != null)
                 {
                     grap.Clear(Color.White);
-                    Draw.DrawWalls(grap, build, trackBar4.Value - 1, centr);
+                    Draw.DrawWalls(grap, build, trackBar4.Value - 1, centr,1);
                 }
             }// создание плана здания
 
@@ -237,25 +238,33 @@ namespace test1
 
         private void PictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
-            if      (radioButton1.Checked && move)
+            if      (radioButton1.Checked )
             {
-                grap.Clear(Color.White);
-                centr.X -= StartMove.X - e.X;
-                centr.Y -= StartMove.Y - e.Y;
-				for (int i = 0; i < build.Floors[trackBar4.Value - 1].walls.Count; i++)
-				{
-					build.Floors[trackBar4.Value - 1].walls[i].ChangePoint(
-						(int)build.Floors[trackBar4.Value - 1].walls[i].Point.X- (StartMove.X - e.X),
-						(int)build.Floors[trackBar4.Value - 1].walls[i].Point.Y -(StartMove.Y - e.Y), trackBar4.Value - 1);
+				if(move)
+				{ grap.Clear(Color.White);
+					centr.X -= StartMove.X - e.X;
+					centr.Y -= StartMove.Y - e.Y;
+					for (int i = 0; i < build.Floors[trackBar4.Value - 1].walls.Count; i++)
+					{
+						build.Floors[trackBar4.Value - 1].walls[i].ChangePoint(
+							(int)build.Floors[trackBar4.Value - 1].walls[i].Point.X - (StartMove.X - e.X),
+							(int)build.Floors[trackBar4.Value - 1].walls[i].Point.Y - (StartMove.Y - e.Y), trackBar4.Value - 1);
+					}
+					StartMove.X = e.X;
+					StartMove.Y = e.Y;
+					//grap.DrawEllipse(pen, centr.X - 25, centr.Y - 25, 50, 50);
+
+					Draw.DrawWalls(grap, build, trackBar4.Value - 1, centr,3);
+					pictureBox1.Image = picture;
+					label4.Text = centr.ToString();
 				}
-				StartMove.X = e.X;
-                StartMove.Y = e.Y;
-                //grap.DrawEllipse(pen, centr.X - 25, centr.Y - 25, 50, 50);
-				
-                Draw.DrawWalls(grap, build, trackBar4.Value - 1, centr);
-                pictureBox1.Image = picture;
-                label4.Text = centr.ToString();
-            }// смещение графа 
+				if(chosen!=-1){
+					build.Floors[trackBar4.Value - 1].walls[chosen].ChangePoint(e.X, e.Y, trackBar4.Value - 1);
+					grap.Clear(Color.White);
+					Draw.DrawWalls(grap, build, trackBar4.Value - 1, centr,3);
+					pictureBox1.Image = picture;
+				}
+			}// смещение графа 
             else if (radioButton2.Checked && (firstvertex != null))
             {
                 grap.Clear(Color.White);
@@ -264,7 +273,7 @@ namespace test1
                               new Point((int)firstvertex.Point.X, (int)firstvertex.Point.Y),
                               new Point(e.X, e.Y));
 
-                Draw.DrawWalls(grap, build, trackBar4.Value - 1, centr);
+                Draw.DrawWalls(grap, build, trackBar4.Value - 1, centr,1);
                 // координаты, расстояние до и градусы 
                 Pen pen = new Pen(Brushes.LightGray, 1);
                 pen.DashStyle = DashStyle.Dash;
@@ -346,5 +355,26 @@ namespace test1
                  build.CreateNewFloor(trackBar4.Value);
             trackBar4.Maximum++; 
         }
-    }
+
+		private void Form1_KeyUp(object sender, KeyEventArgs e)
+		{
+
+		}
+
+		private void radioButton1_CheckedChanged(object sender, EventArgs e)
+		{
+			if (radioButton1.Checked)
+			{
+				grap.Clear(Color.White);
+				Draw.DrawWalls(grap, build, trackBar4.Value - 1, centr, 3);
+				pictureBox1.Image = picture;
+			}
+			else
+			{
+				grap.Clear(Color.White);
+				Draw.DrawWalls(grap, build, trackBar4.Value - 1, centr, 1);
+				pictureBox1.Image = picture;
+			}
+		}
+	}
 }
