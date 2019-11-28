@@ -8,6 +8,8 @@ namespace test1
 {
     public class Floor : Graph
     {
+        public string Name { get; set; } // Кастомные названия этажей
+
         public List<VertexWall> walls;
         public List<VertexRoom> rooms;
         public List<VertexChain> chains;
