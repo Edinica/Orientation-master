@@ -12,21 +12,21 @@ namespace test1
         private Floor  Floor;       // этаж
         private string Description; // описание
         private string AnyInform;   // доп инфа 
-        private string Staff;       // работники
+        private string Staff;       // работники - мб микроструктуру для работника
         private string Timetable;   // расписание
         private string Phone;       // телефон
         private string Site;        // сайт
         public  bool   favorite;    // избранность
 
-        private List<string> Note; //заметки
+        private List<string>  Note;  //заметки
 
         private List<IVertex> Door; // выходы из аудиторий 
 
-        private List<IVertex> Walls; // cтеныа удитории
+        private List<IVertex> Walls;// cтеныа удитории
 
         public Room()
         {
-            Door = new List<IVertex>();
+            Door  = new List<IVertex>();
             Walls = new List<IVertex>();
         }
         public Room(string name,Floor floor, string timetable,
