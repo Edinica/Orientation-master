@@ -8,9 +8,9 @@ using System.Windows.Media.Media3D;
 
 namespace test1
 {
-    public partial class Form1 : Form
+    public partial class Plan : Form
     {
-        public Form1()
+        public Plan()
         {
             InitializeComponent();
             label1.Text = trackBar4.Value.ToString() + " этаж";
@@ -376,6 +376,11 @@ namespace test1
 				Draw.DrawWalls(grap, build, trackBar4.Value - 1, centr, 1);
 				pictureBox1.Image = picture;
 			}
+		}
+
+		private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			Close();
 		}
 	}
 }
